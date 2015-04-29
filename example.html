@@ -1,0 +1,45 @@
+<html>
+<head>
+<script type="text/javascript" src="SyncAsynced.js"></script>
+<script type="text/javascript">
+
+	function log(text) {
+		console.log(text);
+		document.getElementsByTagName('pre').item(0).innerHTML += text + '\n';
+	}
+
+	function exampleTask1(taskNumber, callback) {
+		var rn=Math.floor(Math.random()*11);
+		setTimeout(function () { log('exampleTask1 (' + taskNumber + ') done after ' + rn + ' seconds'); callback.call(this) },rn*1000);
+	}
+	
+	function exampleTask2(taskNumber, callback, i) {
+		var rn=Math.floor(Math.random()*11);
+		setTimeout(function () { log('exampleTask2 (' + taskNumber + ') done after ' + rn + ' seconds: ' + i); callback.call(this) },rn*1000);
+	}
+
+	function start1(callback) {
+		var sync = new SyncAsynced();
+		sync.done = function () { log('All exampleTask1 functions done'); };
+		for (var i = 0; i<10; i++) {
+			sync.start(exampleTask1, null, i);
+		}
+	}
+	function start2(callback){
+		var sync = new SyncAsynced();
+		sync.done = function () { log('All exampleTask2 functions done'); };
+		for (var i = 0; i<10; i++) {
+			var rn=Math.floor(Math.random()*11);
+			sync.start(exampleTask2, 1, i, 'random argument ' + rn);
+		}
+	}
+</script>
+</head>
+<body>
+<pre></pre>
+<script type="text/javascript">
+	start1();
+	start2();
+</script>
+</body>
+</html>
