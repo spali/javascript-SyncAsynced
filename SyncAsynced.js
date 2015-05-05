@@ -8,22 +8,22 @@ function SyncAsynced() {
 	 * @param callbackArgumentPosition  the position index of the callback argument in the function specified in parameter task (or null to append it as last argument)
 	 * @param all additional parameters get passed to the function
 	 */
-	this.start = function (task, callbackArgumentPosition) {
-		var self = this;
+	this.start = function (task, callback, callbackArgumentPosition) {
 		++taskCount;
-		var args = Array.prototype.slice.call(arguments, 2);
-		
-		callback = function () {
+		var args = Array.prototype.slice.call(arguments, 3);
+		var self = this;
+		globalCallback = function () {
+			callback.apply(this, arguments);
 			--taskCount || self.done();
-		};		
+		};
 		if (callbackArgumentPosition) {
 			/* insert callback at specified argument position */
-			args.splice(callbackArgumentPosition, 0, callback);
+			args.splice(callbackArgumentPosition, 0, globalCallback);
 		} else {
 			/* add callback as last argument */
-			args[args.length] = callback;
+			args[args.length] = globalCallback;
 		}
-		task.apply(this,args);		
+		task.apply(this, args);		
 	};
 	
 	/**

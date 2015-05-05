@@ -17,12 +17,16 @@
 		var rn=Math.floor(Math.random()*11);
 		setTimeout(function () { log('exampleTask2 (' + taskNumber + ') done after ' + rn + ' seconds: ' + i); callback.call(this) },rn*1000);
 	}
+	
+	function createCallback(task, i) {
+		return function () { log('callback of exampleTask' + task + ' (' + i + ')'); }
+	}
 
 	function start1(callback) {
 		var sync = new SyncAsynced();
 		sync.done = function () { log('All exampleTask1 functions done'); };
 		for (var i = 0; i<10; i++) {
-			sync.start(exampleTask1, null, i);
+			sync.start(exampleTask1, createCallback(1, i), null, i);
 		}
 	}
 	function start2(callback){
@@ -30,7 +34,8 @@
 		sync.done = function () { log('All exampleTask2 functions done'); };
 		for (var i = 0; i<10; i++) {
 			var rn=Math.floor(Math.random()*11);
-			sync.start(exampleTask2, 1, i, 'random argument ' + rn);
+			//callback = createCallback(i);
+			sync.start(exampleTask2, createCallback(2, i), 1, i, 'random argument ' + rn);
 		}
 	}
 </script>
